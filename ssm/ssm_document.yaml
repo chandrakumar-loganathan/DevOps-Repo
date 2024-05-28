@@ -1,0 +1,99 @@
+description: |
+  This version should be used to run rake task inside a single container of an instance
+  - Input 1: Select single instance from the list displayed.
+  - Input 2 (command to run) : example: bundle exec rake export_qualification      
+schemaVersion: '0.3'
+assumeRole: ${AutomationexecuteRoleArn}
+parameters:
+  EcsCluster:
+    type: String
+  EcsService:
+    type: StringList
+  CommandToRun:
+    type: String
+mainSteps:
+  - name: CheckTheCluster
+    action: 'aws:executeScript'
+    timeoutSeconds: 100
+    inputs:
+      Runtime: python3.8
+      Handler: checkThecluster
+      InputPayload:
+        ecsCluster: '{{EcsCluster}}'
+        ecsService: '{{EcsService}}'
+        commandToRun: '{{CommandToRun}}'
+      Script: |-
+        def checkThecluster(events,context):
+              import boto3 as bot
+              region = 'us-west-2'
+              ecs = bot.client('ecs', region_name=region)
+              ssm = bot.client('ssm', region_name=region)
+              CLUSTER=events['ecsCluster']
+              SERVICE_TO_RUN_COMMAND=events['ecsService']
+              COMMAND=events['commandToRun']
+              service = ecs.list_services(
+                      cluster=CLUSTER
+                  )
+              container_id_task_instance={}
+              container_instance_id={}
+              container_id_task_instance = {}
+              service_count = len(service['serviceArns'])
+              service_list = service['serviceArns']
+              list.sort(service_list)
+              list.sort(SERVICE_TO_RUN_COMMAND)
+              desire_service_len=0
+              max_service_len=len(SERVICE_TO_RUN_COMMAND)-1
+              while (desire_service_len <= max_service_len):
+                          desired_service_number=int(SERVICE_TO_RUN_COMMAND[desire_service_len])-1
+                          list_of_tasks = ecs.list_tasks(
+                              cluster=CLUSTER,
+                              serviceName=service_list[desired_service_number]
+                          )
+                          task_count = len(list_of_tasks['taskArns'])-1
+                          desire_len=0
+                          if( task_count >= 0 ):
+                              while (desire_len <= task_count):
+                                  desired_task_arn=list_of_tasks['taskArns'][desire_len]
+                                  instance_name = ecs.describe_tasks(
+                                      cluster=CLUSTER,
+                                      tasks=[desired_task_arn]
+                                      )
+                                  container_id=""
+                                  desired_container_len=0
+                                  while (desired_container_len < len(instance_name['tasks'][0]['containers'])):
+                                      if "php" in instance_name['tasks'][0]['containers'][desired_container_len]['name'].lower():
+                                          container_id = instance_name['tasks'][0]['containers'][desired_container_len]['runtimeId']
+                                          desired_container_len=len(instance_name['tasks'][0]['containers'])
+                                      else :
+                                          desired_container_len+=1
+                                  instance_arn = instance_name['tasks'][0]['containerInstanceArn']
+                                  container_instance = ecs.describe_container_instances(
+                                      cluster=CLUSTER,
+                                      containerInstances=[instance_arn]
+                                  )
+                                  container_instance_id = []
+                                  container_instance_id.append(container_instance['containerInstances'][0]['ec2InstanceId'])
+                                  print(container_instance_id,container_id)
+                                  command_to_run = "docker exec -i "+ container_id +" "+ COMMAND
+                                  print(command_to_run)
+                                  responce = ssm.send_command(
+                                      InstanceIds=container_instance_id ,
+                                      DocumentName="AWS-RunShellScript" ,
+                                      Parameters={
+                                              'commands':[
+                                                  command_to_run 
+                                              ]
+                                      }
+
+                                  )
+                                  print(responce)
+
+                                  # container_instance_id[container_id] = container_instance['containerInstances'][0]['ec2InstanceId'] 
+                                  # container_id_task_instance[desired_task_arn][container_id] = container_instance_id[desired_task_arn]
+                                  desire_len+=1
+                          desire_service_len+=1
+              return(container_instance_id)
+    outputs:
+      - Name: ecsClusteroutput
+        Type: String
+        Selector: $.Output
