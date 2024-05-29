@@ -1,0 +1,52 @@
+{
+    "agent": {
+      "omit_hostname": true,
+      "metrics_collection_interval": 60,
+      "region": "<region>"
+    },
+    "metrics": {
+      "namespace": "<custom_name_space_name>",
+      "metrics_collected": {
+        "cpu": {
+          "measurement": [
+            "cpu_usage_idle",
+            "cpu_usage_steal"
+          ],
+          "append_dimensions": {
+            "Environment": "<environment-name>"
+          },
+          "total_cpu": true,
+          "metrics_collection_interval": 60
+        },
+        "disk": {
+          "measurement": [
+            "used",
+            "used_percent",
+            "free"
+          ],
+          "append_dimensions": {
+            "Environment": "<environment-name>"
+          },
+          "metrics_collection_interval": 60,
+          "resources": [
+            "/"
+          ],
+          "drop_device": true
+        },
+        "mem": {
+          "measurement": [
+            "mem_available_percent",
+            "mem_used",
+            "mem_used_percent"
+          ],
+          "append_dimensions": {
+            "Environment": "<environment-name>"
+          },
+          "metrics_collection_interval": 60,
+          "resources": [
+            "/"
+          ]
+        }
+      }
+    }
+}
