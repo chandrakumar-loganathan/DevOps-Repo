@@ -1,0 +1,16 @@
+locals {
+  tdf_family=format("%s-tdf",var.COMMON_NAME)
+  php_container=format("%s-php-container",var.COMMON_NAME)
+  php_log=format("%s-php-log",var.COMMON_NAME)
+  nginx_container=format("%s-nginx-container",var.COMMON_NAME)
+  nginx_log=format("%s-nginx-log",var.COMMON_NAME)
+  varnish_container=format("%s-varnish-container",var.COMMON_NAME)
+  varnish_log=format("%s-nginx-log",var.COMMON_NAME)
+  ecs_task_execution_role=format("%s-task-execution-role",var.COMMON_NAME)
+  ecs_task_execution_policy=format("%s-task-execution-policy",var.COMMON_NAME)
+  ecs_service=format("%s-service",var.COMMON_NAME)
+  web_alb_tg=format("%s-tg",var.COMMON_NAME)
+  php_ecr=format("%s-php-repo",var.COMMON_NAME)
+  nginx_ecr=format("%s-nginx-repo",var.COMMON_NAME)
+  varnish_ecr=format("%s-varnish-repo",var.COMMON_NAME)
+}

@@ -1,0 +1,48 @@
+#! Steps to use the Task definition Module readme
+
+Establish a new directory in close proximity to the location of the taskdefinition-base directory.
+
+Duplicate both the taskdefinition-module.tf and taskdefinition-module.tfvars files into the newly created directory. "taskdefinition-module.tf" and "taskdefinition-module.tfvars" files are located in taskdefinition-module-call directory
+
+Specify the S3 bucket and key name in the taskdefinition-module.tf file where the Terraform state files should be stored.
+
+Complete the configuration of environment variables within the taskdefinition-module.tfvars file.
+
+After verifying the environment and S3 bucket details, navigate to the newly created directory using the terminal and execute 'terraform init'. Then, provision the resources by executing 'terraform apply'
+
+
+Example 
+
+File hierarchy will be
+
+-> IAC
+    -> Teraform-magento
+        -> module
+            -> ALB
+            -> ECS
+                -> Taskdefinition-base
+                    -> ecs_task_execution_role.tf
+                    -> local_variable.tf
+                    -> Readme
+                    -> task_definition.tf
+                    -> variable.tf
+                -> Taskdefinition-module-call
+                    -> taskdefinition-module.tf
+                    -> taskdefinition-module.tfvars
+            -> RDS
+
+Example Commands - ( replace the necessary site keywords like brands-labels, sololuxury... )
+
+If the directory name is 'brands_labels', create it under 'IAC/Terraform-magento/module'.
+"mkdir IAC/Teraform-magento/module/brands-labels"
+
+Replicate both the 'IAC/Terraform-magento/module/Taskdefinition-module-call/taskdefinition-module.tf' and 'IAC/Terraform-magento/module/Taskdefinition-module-call/taskdefinition-module.tfvars' files
+
+"cp IAC/Teraform-magento/module/Taskdefinition-module-call/taskdefinition-module.tf IAC/Teraform-magento/module/brand-label/taskdefinition-module.tf"
+"cp IAC/Teraform-magento/module/Taskdefinition-module-call/taskdefinition-module.tfvars IAC/Teraform-magento/module/brand-label/taskdefinition-module.tfvars"
+
+change the .tfvars file and give the following command to provision a new task definition
+
+cd IAC/Teraform-magento/module/brand-label 
+terraform init
+terrafrom apply -var-file taskdefinition-module.tfvars --auto-approve

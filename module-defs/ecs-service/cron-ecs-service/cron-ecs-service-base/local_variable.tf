@@ -1,0 +1,15 @@
+locals {
+  tdf_family=format("%s-tdf",var.COMMON_NAME)
+  php_container=format("%s-php-container",var.COMMON_NAME)
+  php_log=format("%s-php-log",var.COMMON_NAME)
+  ecs_task_execution_role=format("%s-task-execution-role",var.COMMON_NAME)
+  ecs_task_execution_policy=format("%s-task-execution-policy",var.COMMON_NAME)
+  ecs_service=format("%s-service",var.COMMON_NAME)
+  web_alb_tg=format("%s-tg",var.COMMON_NAME)
+  php_ecr=format("%s-php-repo",var.COMMON_NAME)
+  sg=format("%s-codepipeline-sg",var.COMMON_NAME)
+  sg_tag=format("%s-codepipeline-tag",var.COMMON_NAME)
+  build=format("%s-build",var.COMMON_NAME)
+  pipeline=format("%s-pipeline",var.COMMON_NAME)
+  s3_bucket_name=format("%s-pipeline-bucket",var.COMMON_NAME)
+}
