@@ -1,0 +1,5 @@
+# How to retrive the Ecs optimised ami 
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/retrieve-ecs-optimized_AMI.html
+
+# Cloudwatch agent configuration file 
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/download-cloudwatch-agent-commandline.html
